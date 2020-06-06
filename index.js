@@ -21,51 +21,35 @@ function setUrlParams(search_term) {
     return url
 }
 
-// //function to genrate card of result items
-// function displayResultItems(result_items_div, result_items) {
-// // display results as divs with paras
-// // from data extract full_name, html_url, description, language, license.name, pushed_at
-//     result_items.forEach(function (item) {
-//         var div = document.createElement('div')
-//         div.setAttribute('style', 'border: 1px solid lightgrey; margin: 1% 0px 1% 0px; padding: 0% 0% 2% 3%; border-radius: 8px; background-color: white')
-//         var name_p = document.createElement('p')
-//         var link = document.createElement('a')
-//         link.textContent = item.full_name
-//         link.setAttribute('href', item.html_url)
-//         link.setAttribute('target', "_blank")
-//         name_p.append(link) 
-//         var description_p = document.createElement('p')
-//         description_p.style.fontWeight = 'bold'
-//         description_p.textContent = item.description
-//         var info_div = document.createElement('div')
-//         info_div.setAttribute('style', 'display: flex; font-size: small')
-//         var language_p = document.createElement('div')
-//         var lang_snap = document.createElement('snap')
-//         lang_snap.textContent = "Lang: "
-//         lang_snap.setAttribute('style', 'font-weight: bold')
-//         language_p.innerText = item.language
-//         language_p.prepend(lang_snap)
-//         var license_p = document.createElement('div')
-//         license_p.style.marginLeft = '2%'
-//         if(item.license !== null) {
-//             var lic_snap = document.createElement('snap')
-//             lic_snap.textContent = "Lic: "
-//             lic_snap.setAttribute('style', 'font-weight: bold')
-//             license_p.innerText = item.license.name 
-//             license_p.prepend(lic_snap)
-              
-//         }
-//         var updated_on_p = document.createElement('div')
-//         updated_on_p.style.marginLeft = '2%'
-//         var date = new Date(item.pushed_at)
-//         date = date.toDateString().split(' ')
-//         updated_on_p.textContent = "Updated on " +" "+ date[2] +" "+ date[1] +" "+ date[3]
-//         info_div.append(language_p, license_p, updated_on_p)
-//         div.append(name_p, description_p, info_div)
-//         result_items_div.append(div)
+//function to genrate card of result items
+function displayResultItems(result_items, result_div) {
+
+    result_items.forEach(function (item) {
+        var div = document.createElement('div')
+        div.setAttribute('style', 'border: 1px solid lightgrey; margin: 1% 2% 1% 2%; padding: 0%; background-color: white; display: flex; flex-direction: column')
+        var poster = document.createElement('img')
+        poster.setAttribute('src', item.Poster)
+        poster.setAttribute('alt', 'Poster')
+        poster.setAttribute('style', 'width: 200px; min-width: 150px')
+        var info_div = document.createElement('div')
+        info_div.setAttribute('style', 'margin-left: 3%')
+        var imdb_link = document.createElement('a')
+        imdb_link.setAttribute('href', "https://www.imdb.com/title/" + item.imdbID)
+        imdb_link.setAttribute('target', '_blank')
+        imdb_link.style.textDecoration = 'none'
+        var title_h4 = document.createElement('h4')
+        title_h4.setAttribute('style', 'margin-bottom: 2px; margin-top: 5px')
+        title_h4.textContent = item.Title
+        imdb_link.append(title_h4)
+        var year_div = document.createElement('div')
+        year_div.textContent = "Year: "
+        year_div.innerHTML = "<strong>" + item.Year + "</strong>"
+        info_div.append(imdb_link, year_div)
+        div.append(poster, info_div)
+        result_div.append(div)
         
-//     })
-// }
+    })
+}
 
 function displayResults(response_time, search_results) {
 
@@ -74,6 +58,7 @@ function displayResults(response_time, search_results) {
 
     //remove all results from previous search
     if(results_div.children.length !== 0) {
+        document.getElementById('result-count').remove()
         while (results_div.children.length > 0) {
             results_div.removeChild(results_div.lastChild)
         }
@@ -89,9 +74,9 @@ function displayResults(response_time, search_results) {
     else {
         var result_count = document.createElement('div')
         result_count.textContent = 'Found ' + search_results.totalResults + ' results in ' + response_time + 's'
-        result_count.style.color = 'gray'
-        var hr = document.createElement('hr')
-        results_div.append(result_count, hr)
+        result_count.id = "result-count"
+        result_count.setAttribute('style', 'color: gray; text-align: center; padding: 10px')
+        document.querySelector('body').insertBefore(result_count, document.querySelector('.results'))
         displayResultItems(search_results.Search, results_div)
     }
 

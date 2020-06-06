@@ -4,14 +4,13 @@ body {
     font-family: sans-serif;
 }
 input[type="submit"] {
-    cursor: pointer;
-}
-input[type="submit"] {
     background-color: green;
     border-radius: 3px;
     color: white;
     border: green;
     padding: 5px 10px 5px 10px;
+    cursor: pointer;
+    margin: auto;
 }
 #search {
     flex: 1;
@@ -40,8 +39,61 @@ h1 {
     text-align: center;
     margin-top: 1.5%;
 }
+
 .results {
-    display: flex;
-    margin: 2% 20% 2% 20%; 
-    flex-direction: column;
+    display: grid;
+    column-gap: 2%;
+    margin: auto;
+    margin-bottom: 50px;    
+    width: max-content;
 }
+
+@media only screen and (max-width: 600px) {
+    .results {
+        grid-template-columns: auto ;
+        grid-template-rows: auto auto auto auto auto;
+        row-gap: 20px;
+        padding-bottom: 50px;
+    }
+    .search-bar {
+        padding-right: 10px;
+        width: 50%;
+    }
+}
+
+@media only screen and (min-width: 601px) {
+    .results {
+        grid-template-columns: auto auto;
+        grid-template-rows: auto auto auto auto auto;
+        row-gap: 20px;
+    }
+    .search-bar {
+        padding-right: 10px;
+        width: 50%;
+    }
+}
+
+@media only screen and (min-width: 768px) {
+    .results {
+        grid-template-columns: auto auto auto;
+        grid-template-rows: auto auto auto auto;
+        row-gap: 20px;
+    } 
+    .search-bar {
+        padding-right: 5px;
+        width: 50%;
+    }
+}
+
+@media only screen and (min-width: 992px) {
+    .results {
+        grid-template-columns: auto auto auto auto auto;
+        grid-template-rows: auto auto;
+        row-gap: 20px;
+    }
+    .search-bar {
+        width: 30%;
+    }
+}
+
+
