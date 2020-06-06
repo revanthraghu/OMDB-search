@@ -22,33 +22,60 @@ function setUrlParams(page_num) {
 }
 
 //function to genrate card of result items
-function displayResultItems(result_items, result_div) {
-
-    result_items.forEach(function (item) {
+function displayResultItems(search_results, result_div) {
+    var result_items = search_results.Search
+    if(result_items === undefined) {
         var div = document.createElement('div')
         div.setAttribute('style', 'overflow: hidden; border: 1px solid lightgrey; margin: 1% 2% 1% 2%; padding: 0%; background-color: white; display: flex; flex-direction: column')
         var poster = document.createElement('img')
-        poster.setAttribute('src', item.Poster)
+        poster.setAttribute('src', search_results.Poster)
         poster.setAttribute('alt', 'Poster')
-        poster.setAttribute('style', 'width: 200px; min-height: 280px')
+        poster.setAttribute('style', 'width: 200px; min-height: 200px')
         var info_div = document.createElement('div')
         info_div.setAttribute('style', 'margin-left: 3%')
         var imdb_link = document.createElement('a')
-        imdb_link.setAttribute('href', "https://www.imdb.com/title/" + item.imdbID)
+        imdb_link.setAttribute('href', "https://www.imdb.com/title/" + search_results.imdbID)
         imdb_link.setAttribute('target', '_blank')
         imdb_link.style.textDecoration = 'none'
         var title_h4 = document.createElement('h4')
         title_h4.setAttribute('style', 'margin-bottom: 2px; margin-top: 5px')
-        title_h4.textContent = item.Title
+        title_h4.textContent = search_results.Title
         imdb_link.append(title_h4)
         var year_div = document.createElement('div')
         year_div.textContent = "Year: "
-        year_div.innerHTML = "<strong>" + item.Year + "</strong>"
+        year_div.innerHTML = "<strong>" + search_results.Year + "</strong>"
         info_div.append(imdb_link, year_div)
         div.append(poster, info_div)
         result_div.append(div)
-        
-    })
+    }
+    else {
+        result_items.forEach(function (item) {
+            var div = document.createElement('div')
+            div.setAttribute('style', 'overflow: hidden; border: 1px solid lightgrey; margin: 1% 2% 1% 2%; padding: 0%; background-color: white; display: flex; flex-direction: column')
+            var poster = document.createElement('img')
+            poster.setAttribute('src', item.Poster)
+            poster.setAttribute('alt', 'Poster')
+            poster.setAttribute('style', 'width: 200px; min-height: 280px')
+            var info_div = document.createElement('div')
+            info_div.setAttribute('style', 'margin-left: 3%')
+            var imdb_link = document.createElement('a')
+            imdb_link.setAttribute('href', "https://www.imdb.com/title/" + item.imdbID)
+            imdb_link.setAttribute('target', '_blank')
+            imdb_link.style.textDecoration = 'none'
+            var title_h4 = document.createElement('h4')
+            title_h4.setAttribute('style', 'margin-bottom: 2px; margin-top: 5px')
+            title_h4.textContent = item.Title
+            imdb_link.append(title_h4)
+            var year_div = document.createElement('div')
+            year_div.textContent = "Year: "
+            year_div.innerHTML = "<strong>" + item.Year + "</strong>"
+            info_div.append(imdb_link, year_div)
+            div.append(poster, info_div)
+            result_div.append(div)
+            
+        })
+    }
+
 }
 
 function displayResults(response_time, search_results) {
@@ -64,6 +91,9 @@ function displayResults(response_time, search_results) {
             results_div.removeChild(results_div.lastChild)
         }
     }
+    else if(document.querySelector('h2')) {
+        document.querySelector('h2').remove()
+    }
 
     //Check if results obtained from API and display response
     if(search_results.Response === 'False') {
@@ -78,16 +108,21 @@ function displayResults(response_time, search_results) {
             error_msg.remove()
         }
         var result_count = document.createElement('div')
-        result_count.textContent = 'Found ' + search_results.totalResults + ' results in ' + response_time + 's'
+        if(search_results.totalResults === undefined) {
+            result_count.textContent = 'Found result in ' + response_time + 's'
+        }
+        else {
+            result_count.textContent = 'Found ' + search_results.totalResults + ' results in ' + response_time + 's'
+        }
         result_count.id = "result-count"
         result_count.setAttribute('style', 'color: gray; text-align: center; padding: 10px')
         document.querySelector('body').insertBefore(result_count, document.querySelector('.results'))
-        displayResultItems(search_results.Search, results_div)
+        displayResultItems(search_results, results_div)
 
         //create page selectors
         var pages_div = document.createElement('div')
         pages_div.id = "pages"
-        pages_div.setAttribute('style', 'margin: 0px auto 30px auto; display: flex; flex-wrap: wrap; justify-content: center')
+        pages_div.setAttribute('style', 'margin: 0px 10% 30px 10%; display: flex; flex-wrap: wrap; justify-content: center')
         for(var page = 0; page < Math.ceil(search_results.totalResults/10); page++) {
             var page_number = document.createElement('div')
             page_number.textContent = page+1
