@@ -1,6 +1,5 @@
 //function to add api request parameters to url
-function setUrlParams(search_term) {
-
+function setUrlParams(page_num) {
     //exrtact the search type radio button value
     var search_type_form = new FormData(document.querySelector('.search-types'))
     var search_type;
@@ -18,6 +17,7 @@ function setUrlParams(search_term) {
     if(search_type == 'movie' || search_type == 'series') {
         url.searchParams.append("type", search_type)
     }
+    url.searchParams.append("page", page_num)
     return url
 }
 
@@ -26,11 +26,11 @@ function displayResultItems(result_items, result_div) {
 
     result_items.forEach(function (item) {
         var div = document.createElement('div')
-        div.setAttribute('style', 'border: 1px solid lightgrey; margin: 1% 2% 1% 2%; padding: 0%; background-color: white; display: flex; flex-direction: column')
+        div.setAttribute('style', 'overflow: hidden; border: 1px solid lightgrey; margin: 1% 2% 1% 2%; padding: 0%; background-color: white; display: flex; flex-direction: column')
         var poster = document.createElement('img')
         poster.setAttribute('src', item.Poster)
         poster.setAttribute('alt', 'Poster')
-        poster.setAttribute('style', 'width: 200px; min-width: 150px')
+        poster.setAttribute('style', 'width: 200px; min-height: 280px')
         var info_div = document.createElement('div')
         info_div.setAttribute('style', 'margin-left: 3%')
         var imdb_link = document.createElement('a')
@@ -59,6 +59,7 @@ function displayResults(response_time, search_results) {
     //remove all results from previous search
     if(results_div.children.length !== 0) {
         document.getElementById('result-count').remove()
+        document.querySelector('#pages').remove()
         while (results_div.children.length > 0) {
             results_div.removeChild(results_div.lastChild)
         }
@@ -68,23 +69,44 @@ function displayResults(response_time, search_results) {
     if(search_results.Response === 'False') {
         var error_msg = document.createElement('h2')
         error_msg.textContent = search_results.Error + ' Try another name.'
-        error_msg.style.textAlign = 'center'
-        results_div.appendChild(error_msg)
+        error_msg.setAttribute('style', 'text-align: center; color: white')
+        document.querySelector('body').insertBefore(error_msg, document.querySelector('.results'))
     }
     else {
+        var error_msg = document.querySelector('h2')
+        if(error_msg) {
+            error_msg.remove()
+        }
         var result_count = document.createElement('div')
         result_count.textContent = 'Found ' + search_results.totalResults + ' results in ' + response_time + 's'
         result_count.id = "result-count"
         result_count.setAttribute('style', 'color: gray; text-align: center; padding: 10px')
         document.querySelector('body').insertBefore(result_count, document.querySelector('.results'))
         displayResultItems(search_results.Search, results_div)
-    }
 
+        //create page selectors
+        var pages_div = document.createElement('div')
+        pages_div.id = "pages"
+        pages_div.setAttribute('style', 'margin: 0px auto 30px auto; display: flex; flex-wrap: wrap; justify-content: center')
+        for(var page = 0; page < Math.ceil(search_results.totalResults/10); page++) {
+            var page_number = document.createElement('div')
+            page_number.textContent = page+1
+            page_number.id = page+1
+            page_number.setAttribute('style', 'padding: 3px 7px 3px 7px; background-color: white; margin-left: 10px; margin-top: 10px; cursor: pointer')
+            pages_div.appendChild(page_number)
+        }
+        document.querySelector('body').insertBefore(pages_div, document.querySelector('script'))
+        pages_div.addEventListener('click', function (event) {
+            if(event.target.id !== 'pages'){
+               getSearchResults(event.target.textContent)
+            }
+            })
+    }
 }
 
 //main function that runs on submitting search term
-function getSearchResults(search_term) {
-    var url = setUrlParams(search_term)
+function getSearchResults(page_num = 1) {
+    var url = setUrlParams(page_num)
     var results = new XMLHttpRequest()
     results.open("GET", url)
     results.send()
@@ -96,7 +118,7 @@ function getSearchResults(search_term) {
         //per page 10 items displayed...do pagination
     }
 }
-
+var search_term;
 //Submit event listener for the search-bar form
 document.querySelector('form').addEventListener('submit', function (submit_event) {
 
@@ -104,11 +126,11 @@ document.querySelector('form').addEventListener('submit', function (submit_event
     submit_event.preventDefault();
 
     //get the search string from search bar
-    var search_term = document.querySelector('#search').value;
+    search_term = document.querySelector('#search').value;
 
     //Change the webpage title to show the search term
     document.querySelector('title').textContent = "Search - " + search_term
 
     //display results for the seearch term
-    getSearchResults(search_term)
+    getSearchResults()
 })

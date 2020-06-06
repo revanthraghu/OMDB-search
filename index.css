@@ -1,7 +1,10 @@
 body {
     /* background-color: #EFEBE9; */
-    background-color: whitesmoke;
+    background-color: black;
     font-family: sans-serif;
+}
+body > h1 {
+    color: white
 }
 input[type="submit"] {
     background-color: green;
@@ -38,22 +41,27 @@ h1 {
 .search-types {
     text-align: center;
     margin-top: 1.5%;
+    color: white;
 }
 
 .results {
     display: grid;
     column-gap: 2%;
-    margin: auto;
-    margin-bottom: 50px;    
-    width: max-content;
+    justify-content: center;
+    padding-bottom: 5px;
+}
+
+.results > div > img{
+    align-self: center;
+    text-align: center;
 }
 
 @media only screen and (max-width: 600px) {
     .results {
-        grid-template-columns: auto ;
+        grid-template-columns: 200px;
         grid-template-rows: auto auto auto auto auto;
         row-gap: 20px;
-        padding-bottom: 50px;
+        
     }
     .search-bar {
         padding-right: 10px;
@@ -63,7 +71,7 @@ h1 {
 
 @media only screen and (min-width: 601px) {
     .results {
-        grid-template-columns: auto auto;
+        grid-template-columns: 200px 200px;
         grid-template-rows: auto auto auto auto auto;
         row-gap: 20px;
     }
@@ -75,7 +83,7 @@ h1 {
 
 @media only screen and (min-width: 768px) {
     .results {
-        grid-template-columns: auto auto auto;
+        grid-template-columns: 200px 200px 200px;
         grid-template-rows: auto auto auto auto;
         row-gap: 20px;
     } 
@@ -87,7 +95,7 @@ h1 {
 
 @media only screen and (min-width: 992px) {
     .results {
-        grid-template-columns: auto auto auto auto auto;
+        grid-template-columns: 200px 200px 200px 200px 200px;
         grid-template-rows: auto auto;
         row-gap: 20px;
     }
