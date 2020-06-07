@@ -154,6 +154,20 @@ function getSearchResults(page_num = 1) {
     }
 }
 var search_term;
+
+//input change event listener for live search
+document.querySelector('form').addEventListener('input', function(event){
+
+    //Debouncer to wait for user to stop typing
+    if(this.timeout) clearTimeout(this.timeout)
+    this.timeout = setTimeout(function(){
+                        search_term = event.target.value
+                        if(search_term) {
+                            getSearchResults()
+                        }
+                    }, 500)
+})
+
 //Submit event listener for the search-bar form
 document.querySelector('form').addEventListener('submit', function (submit_event) {
 
