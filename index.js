@@ -79,7 +79,6 @@ function displayResultItems(search_results, result_div) {
 }
 
 function displayResults(response_time, search_results) {
-
     //get results div from DOM
     var results_div = document.querySelector('.results')
 
@@ -126,14 +125,22 @@ function displayResults(response_time, search_results) {
         for(var page = 0; page < Math.ceil(search_results.totalResults/10); page++) {
             var page_number = document.createElement('div')
             page_number.textContent = page+1
-            page_number.id = page+1
+            page_number.id = 'page'+(page+1)
             page_number.setAttribute('style', 'padding: 3px 7px 3px 7px; background-color: white; margin-left: 10px; margin-top: 10px; cursor: pointer')
             pages_div.appendChild(page_number)
         }
         document.querySelector('body').insertBefore(pages_div, document.querySelector('script'))
-        pages_div.addEventListener('click', function (event) {
+
+        // retrieves current page from localStorage and highlights current page
+        if(localStorage.getItem('page')){
+            document.querySelector('#'+localStorage.getItem('page')).style.backgroundColor = 'orange'
+        }
+
+        //add event listener to pages
+        pages_div.addEventListener('click', function pagination(event) {
             if(event.target.id !== 'pages'){
-               getSearchResults(event.target.textContent)
+                localStorage.setItem('page', event.target.id)
+                getSearchResults(event.target.textContent)
             }
             })
     }
@@ -183,3 +190,8 @@ document.querySelector('form').addEventListener('submit', function (submit_event
     //display results for the seearch term
     getSearchResults()
 })
+
+//on window load sets active page in localStorage to page1
+window.onload = function (){
+    localStorage.setItem('page', 'page1')
+}
