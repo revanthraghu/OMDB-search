@@ -1,4 +1,4 @@
-# masai-sprint-3
+# OMDB Search
 Search for movies and series info using the OMDB API.  
 The radio buttons below the search bar help limit search results to selected option.
 ## Features
